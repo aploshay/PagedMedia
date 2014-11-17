@@ -24,11 +24,11 @@ describe PagesController do
 
   describe 'PUT update' do
     it 'stores a previous-page link' do
-      apage = mock_model(Page, :prev_page= => nil, update: nil)
+      apage = mock_model(Page, :prev_sib= => nil, update: nil)
       expect(Page).to receive(:find).and_return(apage)
-      expect(apage).to receive(:update).with('prev_page' => 'page:3')
+      expect(apage).to receive(:update).with('prev_sib' => 'page:3')
       put :update, {
-        page: {prev_page: 'page:3'},
+        page: {prev_sib: 'page:3'},
         id: 'page:4'
       }
       assert_response :success
@@ -37,9 +37,9 @@ describe PagesController do
     it 'stores a next-page link' do
       apage = mock_model(Page, :next_page= => nil, update: nil)
       expect(Page).to receive(:find).and_return(apage)
-      expect(apage).to receive(:update).with('next_page' => 'page:5')
+      expect(apage).to receive(:update).with('next_sib' => 'page:5')
       put :update, {
-        page: {next_page: 'page:5'},
+        page: {next_sib: 'page:5'},
         id: 'page:4'
       }
       assert_response :success

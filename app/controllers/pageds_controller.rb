@@ -10,7 +10,7 @@ class PagedsController < ApplicationController
   # GET /pageds/1
   # GET /pageds/1.json
   def show
-    @ordered, @error = @paged.order_pages()
+    @ordered, @error = @paged.order_children()
     if @error
       flash.now[:error] = "ERROR Ordering Items : #{@error}"
     end
@@ -111,12 +111,12 @@ class PagedsController < ApplicationController
 
       previous_page = nil
       pages.each do |page|
-        page.prev_page = previous_page
+        page.prev_sib = previous_page
         previous_page = page.id
       end
       next_page = nil
       pages.reverse_each do |page|
-        page.next_page = next_page
+        page.next_sib = next_page
         next_page = page.id
       end
 

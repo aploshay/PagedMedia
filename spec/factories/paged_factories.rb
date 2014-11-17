@@ -25,11 +25,11 @@ FactoryGirl.define do
     trait :with_pages do
       after(:create) do |paged|
         pages = Array.new
-        pages[0] = create(:page, paged: paged, logical_number: "Page 1")
+        pages[0] = create(:page, parent: paged, logical_number: "Page 1")
         paged.reload
         i = 1
         while i < 5 do
-          pages[i] = create(:page, paged: paged, logical_number: "Page #{i + 1}", prev_page: pages[i - 1].pid)
+          pages[i] = create(:page, parent: paged, logical_number: "Page #{i + 1}", prev_sib: pages[i - 1].pid)
           paged.reload
           i += 1
         end
@@ -40,11 +40,11 @@ FactoryGirl.define do
     trait :with_score_pages do
       after(:create) do |paged|
         pages = Array.new
-        pages[0] = create(:page, paged: paged, logical_number: "Page 1")
+        pages[0] = create(:page, parent: paged, logical_number: "Page 1")
         paged.reload
         i = 1
         while i < 5 do
-          pages[i] = create(:page, paged: paged, logical_number: "Page #{i + 1}", prev_page: pages[i - 1].pid)
+          pages[i] = create(:page, parent: paged, logical_number: "Page #{i + 1}", prev_sib: pages[i - 1].pid)
           paged.reload
           i += 1
         end
@@ -71,11 +71,20 @@ FactoryGirl.define do
         #   of pageds found in the manifest file
         page_data = file_content["pageds"][0]["pages"]
         pages = Array.new
-        pages[0] = create(:page, paged: paged, logical_number: page_data["descMetadata"]["logical_num"][0], text: page_data["descMetadata"]["text"][0], page_struct: page_data["descMetadata"]["page_struct"][0])
+        pages[0] = create(:page,
+          parent: paged,
+          logical_number: page_data["descMetadata"]["logical_num"][0],
+          text: page_data["descMetadata"]["text"][0],
+          page_struct: page_data["descMetadata"]["page_struct"][0])
         paged.reload
         i = 1
         while i < page_data["page count"] do
-          pages[i] = create(:page, paged: paged, logical_number: page_data["descMetadata"]["logical_num"][i], prev_page: pages[i - 1].pid, text: page_data["descMetadata"]["text"][i], page_struct: page_data["descMetadata"]["page_struct"][i])
+          pages[i] = create(:page,
+            parent: paged,
+            logical_number: page_data["descMetadata"]["logical_num"][i],
+            prev_sib: pages[i - 1].pid,
+            text: page_data["descMetadata"]["text"][i],
+            page_struct: page_data["descMetadata"]["page_struct"][i])
           paged.reload
           i += 1
         end
@@ -92,7 +101,6 @@ FactoryGirl.define do
       end
     end
 
-    
     #Create a newspaper
     trait :newspaper do
       type "newspaper"

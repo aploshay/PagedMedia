@@ -9,7 +9,7 @@ describe Page do
     @paged.save
   end
 
-  before(:each) { @page = Page.new(prev_page: '', next_page: '') }
+  before(:each) { @page = Page.new(prev_sib: '', next_sib: '') }
 
   after(:all) do
     # Clean up Fedora debris
@@ -20,7 +20,7 @@ describe Page do
   def empty(paged)
     # Clean up Fedora debris
     paged.reload
-    paged.pages.each {|page| page.delete}
+    paged.children.each {|page| page.delete}
     paged.reload # delete fails if in-memory Paged still knows deleted Pages
   end
 
@@ -41,8 +41,8 @@ describe Page do
 
   it { should respond_to(:logical_number) }
   it { should respond_to(:text) }
-  it { should respond_to(:prev_page) }
-  it { should respond_to(:next_page) }
+  it { should respond_to(:prev_sib) }
+  it { should respond_to(:next_sib) }
 
   describe 'enforces linkage rules:' do
 
@@ -53,7 +53,7 @@ describe Page do
       @page.paged = @paged
       @page.save
       @paged.reload # paged didn't see page linkage yet
-      expect(@paged.pages.size).to eq 1
+      expect(@paged.children.size).to eq 1
 
       empty @paged
     end
@@ -62,8 +62,8 @@ describe Page do
       pending 'commented'
       empty @paged
 
-      @page.paged = @paged
-      @page.prev_page = 'too:many'
+      @page.parent = @paged
+      @page.prev_sib = 'too:many'
       expect(@page.save).to be_false
 
       empty @paged
@@ -72,15 +72,15 @@ describe Page do
     it 'must have one or both siblings if it is not the only one in this Paged' do
       empty @paged
 
-      @page.prev_page = ''
+      @page.prev_sib = ''
       @page.logical_number = '1'
-      @page.paged = @paged
+      @page.parent = @paged
       expect(@page.save).to be_true
       @paged.save
 
-      page2 = Page.new(logical_number: '2', prev_page: '', next_page: '')
+      page2 = Page.new(logical_number: '2', prev_sib: '', next_sib: '')
       @paged.reload
-      page2.paged = @paged
+      page2.parent = @paged
       expect(page2.save).to be_false
 
       empty @paged
@@ -96,12 +96,12 @@ describe Page do
       page1.reload
       page2.reload
       page3.reload
-      expect(page1.prev_page).to be_nil
-      expect(page1.next_page).to eql page2.pid
-      expect(page2.prev_page).to eql page1.pid
-      expect(page2.next_page).to eql page3.pid
-      expect(page3.prev_page).to eql page2.pid
-      expect(page3.next_page).to be_nil
+      expect(page1.prev_sib).to be_nil
+      expect(page1.next_sib).to eql page2.pid
+      expect(page2.prev_sib).to eql page1.pid
+      expect(page2.next_sib).to eql page3.pid
+      expect(page3.prev_sib).to eql page2.pid
+      expect(page3.next_sib).to be_nil
 
       empty @paged
     end
@@ -114,12 +114,12 @@ describe Page do
       page2.delete
 
       page1.reload
-      expect(page1.prev_page).to be_empty
-      expect(page1.next_page).to eql(page3.pid)
+      expect(page1.prev_sib).to be_empty
+      expect(page1.next_sib).to eql(page3.pid)
 
       page3.reload
-      expect(page3.prev_page).to eql(page1.pid)
-      expect(page3.next_page).to be_empty
+      expect(page3.prev_sib).to eql(page1.pid)
+      expect(page3.next_sib).to be_empty
 
       empty @paged
     end
@@ -129,28 +129,28 @@ describe Page do
   # Populate @paged with three linked pages, and return references to them.
   def make_a_book
     # First page, can have no siblings
-    page1 = Page.new(logical_number: '1', prev_page: '', next_page: '')
-    page1.paged = @paged
+    page1 = Page.new(logical_number: '1', prev_sib: '', next_sib: '')
+    page1.parent = @paged
     page1.save!
     @paged.save!
 
     # Second page, must have at least one sibling
-    page3 = Page.new(logical_number: '3', next_page: '')
+    page3 = Page.new(logical_number: '3', next_sib: '')
     page1.reload
-    page3.prev_page = page1.pid
+    page3.prev_sib = page1.pid
     @paged.reload
-    page3.paged = @paged
+    page3.parent = @paged
     page3.save!
     @paged.save!
 
     # Third page, inserts itself between first and second
     page2 = Page.new(logical_number: '2')
     page1.reload
-    page2.prev_page = page1.pid # follows first page
+    page2.prev_sib = page1.pid # follows first page
     page3.reload
-    page2.next_page = page3.pid # precedes second page
+    page2.next_sib = page3.pid # precedes second page
     @paged.reload
-    page2.paged = @paged
+    page2.parent = @paged
     page2.save!
 
     return [ page1, page2, page3 ]

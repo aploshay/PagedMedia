@@ -19,7 +19,7 @@ describe PagedsController do
   end 
 
   after(:all) do  
-    @test_paged.pages.each {|page| page.delete }
+    @test_paged.children.each {|page| page.delete }
     @test_paged.reload
     @test_paged.delete
   end
@@ -77,19 +77,19 @@ describe 'For page listing' do
   context "when more than one first page is found" do
     specify "an error message should display" do
       #Find page 3 and remove prev page
-      prev_page = ''
+      prev_sib = ''
       page3 = ''
-      @test_paged.pages.each {|page|
+      @test_paged.children.each {|page|
         if page.logical_number == "Page 3"
           page3 = page
-          prev_page = page.prev_page
-          page.prev_page = ''
+          prev_sib = page.prev_sib
+          page.prev_sib = ''
           page.save!
         end
       }      
       visit pageds_path + '/' + @test_paged.pid
       # Return page 3's prev page
-      page3.prev_page = prev_page
+      page3.prev_sib = prev_sib
       page3.save!
       expect(page).to have_css('div.alert-error')
     end
@@ -100,17 +100,17 @@ describe 'For page listing' do
       # Find page 3 and redirect it to itself
       next_page = ''
       page3 = ''
-      @test_paged.pages.each {|page|
+      @test_paged.children.each {|page|
         if page.logical_number == "Page 3"
           page3 = page
-          next_page = page.next_page
-          page.next_page = page.pid
+          next_page = page.next_sib
+          page.next_sib = page.pid
           page.save!
         end
       }
       visit pageds_path + '/' + @test_paged.pid
       # Return page 3's prev page
-      page3.next_page = next_page
+      page3.next_sib = next_page
       page3.save!
       expect(page).to have_css('div.alert-error')
     end
@@ -121,24 +121,24 @@ describe 'For page listing' do
       # Find page 3 and remove next page
       next_page = ''
       page3 = ''
-      @test_paged.pages.each {|page|
+      @test_paged.children.each {|page|
         if page.logical_number == "Page 3"
           page3 = page
-          next_page = page.next_page
-          page.next_page = ''
+          next_page = page.next_sib
+          page.next_sib = ''
           page.save!
         end
       }
       visit pageds_path + '/' + @test_paged.pid
       # Return page 3's prev page
-      page3.next_page = next_page
+      page3.next_sib = next_page
       page3.save!
       expect(page).to have_css('div.alert-error')
     end
   end
   
   after(:all) do  
-    @test_paged.pages.each {|page| page.delete }
+    @test_paged.children.each {|page| page.delete }
     @test_paged.reload
     @test_paged.delete
   end
@@ -161,7 +161,7 @@ describe 'For page reordering' do
   end
 
   after(:all) do  
-    @test_paged.pages.each {|page| page.delete }
+    @test_paged.children.each {|page| page.delete }
     @test_paged.reload
     @test_paged.delete
   end
