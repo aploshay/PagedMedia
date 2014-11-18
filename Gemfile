@@ -48,6 +48,7 @@ end
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+gem 'blacklight-hierarchy', :git => "https://github.com/aploshay/blacklight-hierarchy.git", :branch => "blacklight_470"
 gem "bootstrap-sass"
 gem "devise"
 gem "devise-guests", "~> 0.3"
