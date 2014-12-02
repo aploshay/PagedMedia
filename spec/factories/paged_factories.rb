@@ -33,7 +33,7 @@ FactoryGirl.define do
         p paged.children
         i = 1
         while i < 5 do
-          pages[i] = create(:page, parent: paged, logical_number: "Page #{i + 1}", prev_sib: pages[i - 1].pid)
+          pages[i] = create(:page, parent: paged.pid, logical_number: "Page #{i + 1}", prev_sib: pages[i - 1].pid)
           paged.reload
           i += 1
         end
@@ -44,11 +44,11 @@ FactoryGirl.define do
     trait :with_score_pages do
       after(:create) do |paged|
         pages = Array.new
-        pages[0] = create(:page, parent: paged, logical_number: "Page 1")
+        pages[0] = create(:page, parent: paged.pid, logical_number: "Page 1")
         paged.reload
         i = 1
         while i < 5 do
-          pages[i] = create(:page, parent: paged, logical_number: "Page #{i + 1}", prev_sib: pages[i - 1].pid)
+          pages[i] = create(:page, parent: paged.pid, logical_number: "Page #{i + 1}", prev_sib: pages[i - 1].pid)
           paged.reload
           i += 1
         end

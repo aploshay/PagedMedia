@@ -74,13 +74,13 @@ describe Page do
 
       @page.prev_sib = ''
       @page.logical_number = '1'
-      @page.parent = @paged
+      @page.parent = @paged.pid
       expect(@page.save).to be_true
       @paged.save
 
       page2 = Page.new(logical_number: '2', prev_sib: '', next_sib: '')
       @paged.reload
-      page2.parent = @paged
+      page2.parent = @paged.pid
       expect(page2.save).to be_false
 
       empty @paged
@@ -130,7 +130,7 @@ describe Page do
   def make_a_book
     # First page, can have no siblings
     page1 = Page.new(logical_number: '1', prev_sib: '', next_sib: '')
-    page1.parent = @paged
+    page1.parent = @paged.pid
     page1.save!
     @paged.save!
 
@@ -139,7 +139,7 @@ describe Page do
     page1.reload
     page3.prev_sib = page1.pid
     @paged.reload
-    page3.parent = @paged
+    page3.parent = @paged.pid
     page3.save!
     @paged.save!
 
@@ -150,7 +150,7 @@ describe Page do
     page3.reload
     page2.next_sib = page3.pid # precedes second page
     @paged.reload
-    page2.parent = @paged
+    page2.parent = @paged.pid
     page2.save!
 
     return [ page1, page2, page3 ]
