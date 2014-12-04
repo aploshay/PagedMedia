@@ -78,6 +78,16 @@ class CatalogController < ApplicationController
       'type' => [['type', 'tesim'], ":"]
       }
     }
+    # experimental changes to make logical number
+    config.add_facet_field solr_name('logical_number'), label: 'Logical Number', partial: 'blacklight/hierarchy/facet_hierarchy'
+    config.facet_display = {
+      :hierarchy => {
+      'tag' => [nil],
+      'type' => [['type', 'tesim'], ":"],
+      'logical_number' => [['logical_number', 'tesim'], ":"]
+      }
+    }
+
 
     # Have BL send all facet field names to Solr, which has been the default
     # previously. Simply remove these lines if you'd rather use Solr request

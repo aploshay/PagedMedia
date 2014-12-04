@@ -44,6 +44,10 @@
 <%= link_to 'View in BookReader', bookreader_paged_path(@paged) + '#page/1/mode/2up', target: "_blank"%> |
 <%= link_to 'Edit', edit_paged_path(@paged) %> |
 <%= link_to 'Back', pageds_path %>
+<hr/>
+EXPERIMENTAL: Hierarchy navigation
+
+<%= render 'blacklight/hierarchy/facet_hierarchy', facet_field: Blacklight::Configuration::FacetField.new(field: "type") %>
 
 <hr/>
 
