@@ -12,12 +12,13 @@
         <th>Links</th>
       </tr>
       <% ordered.each do |page| %>
+      <% my_page = Page.find(page) %>
       <tr>
         <td>
-          <% if page.image_datastream.mimeType %>
+          <% if my_page.image_datastream.mimeType %>
             <%= link_to image_tag(
-                    ActiveFedora.fedora_config.credentials[:url] + "/" + page.image_datastream.url,
-                    alt: page.image_datastream.label,
+                    ActiveFedora.fedora_config.credentials[:url] + "/" + my_page.image_datastream.url,
+                    alt: my_page.image_datastream.label,
                     height: "64",
                     width: "64"
                   ),
@@ -25,10 +26,10 @@
             %>
           <% end %>
         </td>
-        <td class='logical_numbers'><%= page.logical_number %></td>
-        <td><%= page.id %></td>
-        <td><%= page.prev_page %></td>
-        <td><%= page.next_page %></td>
+        <td class='logical_numbers'><%= my_page.logical_number %></td>
+        <td><%= my_page.id %></td>
+        <td><%= my_page.prev_page %></td>
+        <td><%= my_page.next_page %></td>
         <td>
           <%= link_to 'Show', page %> |
           <%= link_to 'Edit', edit_page_path(page) %> |

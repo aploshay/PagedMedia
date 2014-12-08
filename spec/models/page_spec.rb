@@ -20,7 +20,7 @@ describe Page do
   def empty(paged)
     # Clean up Fedora debris
     paged.reload
-    paged.children.each {|page| page.delete}
+    paged.children.each {|page| Node.find(page).delete}
     paged.reload # delete fails if in-memory Paged still knows deleted Pages
   end
 

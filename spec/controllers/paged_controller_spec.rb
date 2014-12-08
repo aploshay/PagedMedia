@@ -12,14 +12,14 @@ describe PagedsController do
     it 'should return pid and image ds uri given an index integer' do
       get :pages, id: @test_paged.id, index: 1
       parsed = JSON.parse response.body
-      expect(parsed['id']).to eq @test_paged.pages[1].pid
+      expect(parsed['id']).to eq Page.find(@test_paged.children[1]).pid
       expect(parsed['index']).to eq 1.to_s
-      expect(parsed['ds_url']).to match /#{ERB::Util.url_encode(@test_paged.pages[1].pid)}\/datastreams\/pageImage\/content$/
+      expect(parsed['ds_url']).to match /#{ERB::Util.url_encode(Page.find(@test_paged.children[1]).pid)}\/datastreams\/pageImage\/content$/
     end 
   end 
 
   after(:all) do  
-    @test_paged.children.each {|page| page.delete }
+    @test_paged.children.each {|page| Page.find(page).delete }
     @test_paged.reload
     @test_paged.delete
   end
@@ -80,11 +80,12 @@ describe 'For page listing' do
       prev_sib = ''
       page3 = ''
       @test_paged.children.each {|page|
-        if page.logical_number == "Page 3"
-          page3 = page
-          prev_sib = page.prev_sib
-          page.prev_sib = ''
-          page.save!
+        my_page = Page.find(page)
+        if my_page.logical_number == "Page 3"
+          page3 = my_page
+          prev_sib = my_page.prev_sib
+          my_page.prev_sib = ''
+          my_page.save!
         end
       }      
       visit pageds_path + '/' + @test_paged.pid
@@ -101,11 +102,12 @@ describe 'For page listing' do
       next_page = ''
       page3 = ''
       @test_paged.children.each {|page|
-        if page.logical_number == "Page 3"
+        my_page = Page.find(page)
+        if my_page.logical_number == "Page 3"
           page3 = page
-          next_page = page.next_sib
-          page.next_sib = page.pid
-          page.save!
+          next_page = my_page.next_sib
+          my_page.next_sib = my_page.pid
+          my_page.save!
         end
       }
       visit pageds_path + '/' + @test_paged.pid
@@ -122,11 +124,12 @@ describe 'For page listing' do
       next_page = ''
       page3 = ''
       @test_paged.children.each {|page|
-        if page.logical_number == "Page 3"
-          page3 = page
-          next_page = page.next_sib
-          page.next_sib = ''
-          page.save!
+        my_page = Page.find(page)
+        if my_page.logical_number == "Page 3"
+          page3 = my_page
+          next_page = my_page.next_sib
+          my_page.next_sib = ''
+          my_page.save!
         end
       }
       visit pageds_path + '/' + @test_paged.pid
@@ -138,7 +141,7 @@ describe 'For page listing' do
   end
   
   after(:all) do  
-    @test_paged.children.each {|page| page.delete }
+    @test_paged.children.each {|page| Page.find(page).delete }
     @test_paged.reload
     @test_paged.delete
   end
@@ -161,7 +164,7 @@ describe 'For page reordering' do
   end
 
   after(:all) do  
-    @test_paged.children.each {|page| page.delete }
+    @test_paged.children.each {|page| Page.find(page).delete }
     @test_paged.reload
     @test_paged.delete
   end
