@@ -104,7 +104,7 @@ describe 'For page listing' do
       @test_paged.children.each {|page|
         my_page = Page.find(page)
         if my_page.logical_number == "Page 3"
-          page3 = page
+          page3 = my_page
           next_page = my_page.next_sib
           my_page.next_sib = my_page.pid
           my_page.save!

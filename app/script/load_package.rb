@@ -9,8 +9,9 @@ describe 'Loading objects' do
 
   context 'Loading an example score' do
     it 'should create a score and load pages' do
-      @test_paged.pages.each {|page|
-        p 'Loaded ' + page.logical_number
+      @test_paged.children.each {|page|
+        my_page = Page.find(page)
+        p 'Loaded ' + my_page.logical_number
       }
     end
   end 
