@@ -60,7 +60,7 @@ end
 
 describe 'For page listing' do
 
-  before(:all) do
+  before(:each) do
     @test_paged = create(:paged, :with_pages)
   end
 
@@ -140,7 +140,7 @@ describe 'For page listing' do
     end
   end
   
-  after(:all) do  
+  after(:each) do
     @test_paged.children.each {|page| Page.find(page).delete }
     @test_paged.reload
     @test_paged.delete
