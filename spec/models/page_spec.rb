@@ -4,14 +4,13 @@ require 'spec_helper'
 
 describe Page do
 
-  before(:all) do
+  before(:each) do
     @paged = FactoryGirl.create :test_paged
     @paged.save
+    @page = Page.new(prev_sib: '', next_sib: '')
   end
 
-  before(:each) { @page = Page.new(prev_sib: '', next_sib: '') }
-
-  after(:all) do
+  after(:each) do
     # Clean up Fedora debris
     empty @paged
     @paged.delete
