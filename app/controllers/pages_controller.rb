@@ -37,7 +37,7 @@ class PagesController < ApplicationController
       if @page.save
         if @page.parent
           parent = @page.parent
-          Node.find(parent).update_index
+          Paged.find(parent).update_index
           format.html { redirect_to "/pageds/" + @page.parent, notice: 'Page was successfully created.'}
         else
           format.html { redirect_to @page, notice: 'Page was successfully created.' }

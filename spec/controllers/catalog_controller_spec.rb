@@ -8,6 +8,8 @@ require 'spec_helper'
   describe "facet search" do
 
     before(:all) do
+      Page.destroy_all
+      Paged.destroy_all
       @test_newspaper = FactoryGirl.create :paged, :newspaper
       @test_score = FactoryGirl.create :paged, :score
     end
@@ -133,6 +135,14 @@ require 'spec_helper'
           get_view
         end
         it "returns only paged object in @document_list" do
+          assigns(:document_list).each do |document|
+            puts "\n\n"
+            puts document["active_fedora_model_ssi"]
+            puts document["id"]
+            puts document["item_id_si"]
+          end
+          puts "\n\n"
+          puts @newspaper_without_pages.to_solr.inspect
           expect(assigns(:document_list).size).to eq 1
         end
       end
@@ -142,6 +152,16 @@ require 'spec_helper'
           get_view
         end
         it "returns paged object and pages in @document_list" do
+	  assigns(:document_list).each do |document|
+	    puts "\n\n"
+	    puts document["active_fedora_model_ssi"]
+	    puts "id: " + document["id"]
+	    puts "item_id_si: " + document["item_id_si"].to_s
+	  end
+          puts "\n\n"
+          puts assigns(:document_list).last.inspect
+          puts "\n\n"
+          puts @newspaper_with_pages.to_solr.inspect
           expect(assigns(:document_list).size).to eq 6
         end
       end
@@ -156,8 +176,11 @@ require 'spec_helper'
     end
 
    after(:all) do
-     @newspaper_without_pages.delete
-     @newspaper_with_pages.pages.each { |page| page.delete }
-     @newspaper_with_pages.delete
+     Page.destroy_all
+     Paged.destroy_all
+     #@newspaper_without_pages.delete
+     # FIXME: fix page deletion
+     #@newspaper_with_pages.pages.each { |page| page.delete }
+     #@newspaper_with_pages.delete
    end
   end
