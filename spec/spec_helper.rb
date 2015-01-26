@@ -51,7 +51,6 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    Rails.cache.clear
     DatabaseCleaner.start
   end
 
