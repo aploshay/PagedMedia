@@ -42,22 +42,18 @@ RSpec.configure do |config|
   config.order = "random"
 
   config.before(:suite) do
-    # DatabaseCleaner[:active_record].strategy = :deletion
-    DatabaseCleaner[:active_fedora].strategy = :deletion
-    Deprecation.default_deprecation_behavior = :silence
-
     Rails.cache.clear 
-    DatabaseCleaner.clean
   end
 
   config.before(:each) do
     Rails.cache.clear
-    DatabaseCleaner.start
   end
 
   config.after(:each) do
     Rails.cache.clear
-    DatabaseCleaner.clean
+    ActiveFedora::Base.delete_all
+    Blacklight.solr.delete_by_query("*:*")
+    Blacklight.solr.commit
   end 
   
   #Factory Girl
