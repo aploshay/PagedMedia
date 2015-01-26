@@ -42,18 +42,16 @@ RSpec.configure do |config|
   config.order = "random"
 
   config.before(:suite) do
+    Deprecation.default_deprecation_behavior = :silence
     Rails.cache.clear 
-  end
-
-  config.before(:each) do
-    Rails.cache.clear
   end
 
   config.after(:each) do
     Rails.cache.clear
     ActiveFedora::Base.delete_all
-    Blacklight.solr.delete_by_query("*:*")
-    Blacklight.solr.commit
+    solr = ActiveFedora::SolrService.instance.conn
+    solr.delete_by_query("*:*")
+    solr.commit
   end 
   
   #Factory Girl
