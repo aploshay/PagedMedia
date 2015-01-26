@@ -57,6 +57,8 @@ FactoryGirl.define do
           p score_page
           page.pageImage.content = File.open(Rails.root + score_page)
           page.save
+	  #FIXME: helpful?
+	  page.reload
         end
       end
     end
