@@ -60,8 +60,12 @@ end
 
 namespace :pmp do
   require "#{Rails.root}/lib/tasks/batch_import"
+  desc "Process XLSX manifests"
+  task :process_batches => :environment do |task, args|
+    process_batches
+  end
   desc "Import batch manifests"
-  task :import_batches => :environment do |task, args|
-    import_batch
+  task :ingest_batches => :environment do |task, args|
+    ingest_batches
   end
 end
