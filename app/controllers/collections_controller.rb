@@ -55,6 +55,6 @@ class CollectionsController < ApplicationController
     end
 
     def collection_params
-      params.require(:collection).permit(:name, :prev_sib, :next_sib, :parent, :children)
+      params.require(:collection).permit(:name, :prev_sib, :next_sib, :parent, :children, :skip_sibling_validation, :skip_checked_save)
     end
 end

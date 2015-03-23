@@ -16,14 +16,6 @@
       <%= f.label :logical_number %>
       <%= f.text_field :logical_number %>
     </li>
-    <li>
-      <%= f.label 'Previous page:' %>
-      <%= f.text_field :prev_sib %>
-    </li>
-    <li>
-      <%= f.label 'Next page:' %>
-      <%= f.text_field :next_sib %>
-    </li>
     <!-- OCR File -->
     <% if !@page.new? %>
     <li>
@@ -72,6 +64,8 @@
       <%= f.file_field :image_file %>
     </li>
   </ol>
+
+  <%= render 'nodes/node_form_fields', f: f %>
   
   <div class="actions page_submit">
     <% if !@page.new? %>

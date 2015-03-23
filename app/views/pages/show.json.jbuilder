@@ -1,1 +1,1 @@
-json.extract! @page, :id, :logical_number, :prev_sib, :next_sib
+json.extract! @page, :id, :logical_number, :parent, :prev_sib, :next_sib

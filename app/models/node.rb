@@ -33,13 +33,14 @@ module Node# < ActiveFedora::Base
       # skip_sibling_validation both skips the custom validation and runs an unchecked save
       attr_accessor :skip_sibling_validation
       validate :validate_has_required_siblings, unless: :skip_sibling_validation
+      attr_accessor :skip_checked_save
     end
   end
 
   # If the parent is empty, sibling pointers should be nil, otherwise at least
   # one must be non-nil.
   def validate_has_required_siblings
-    return if parent.blank?
+    return if parent.blank? || !skip_checked_save.to_i.zero?
     my_parent = ActiveFedora::Base.find(parent, cast: true)
 
     # Parent has no children yet, so this node can't have siblings
@@ -80,9 +81,12 @@ module Node# < ActiveFedora::Base
   # method's internal use.
   def save(opts={})
 
-    if (opts.has_key?(:unchecked))
+    if (opts.has_key?(:unchecked) || !skip_checked_save.to_i.zero?)
+      puts "SKIPPING: #{skip_checked_save.class}, #{skip_checked_save.to_i}END"
+      puts "SKIPPING: #{opts.has_key?(:unchecked).class}, #{opts.has_key?(:unchecked)}END"
       return super()
     end
+    puts "CHECKING"
 
     # Get a copy of my supposed parent.
     my_parent = ActiveFedora::Base.find(parent, cast: true) unless parent.blank?
@@ -182,11 +186,11 @@ module Node# < ActiveFedora::Base
     end
 
     # Unlink myself from old previous sibling
-    unless prev_sib.blank? || prev_sib_was == prev_sib
-      was_prev_sibling = ActiveFedora::Base.find(prev_sib_was, cast: true)
-      was_prev_sibling.next_sib = next_sib_was
-      was_prev_sibling.save(unchecked: 1)
-    end
+    # unless prev_sib.blank? || prev_sib_was == prev_sib
+      # was_prev_sibling = ActiveFedora::Base.find(prev_sib_was, cast: true)
+      # was_prev_sibling.next_sib = next_sib_was
+      # was_prev_sibling.save(unchecked: 1)
+    # end
 
     # Link myself to new previous sibling.
     unless prev_sib.blank?
@@ -197,12 +201,12 @@ module Node# < ActiveFedora::Base
     end
 
     # Unlink myself from old previous sibling
-    unless next_sib.blank? || next_sib_was == next_sib
-      was_next_sibling = ActiveFedora::Base.find(next_sib_was, cast: true)
-      was_next_sibling.prev_sib = prev_sib_was 
-      was_next_sibling.save(unchecked: 1)
-    end
-
+    # unless next_sib.blank? || next_sib_was == next_sib
+      # was_next_sibling = ActiveFedora::Base.find(next_sib_was, cast: true)
+      # was_next_sibling.prev_sib = prev_sib_was 
+      # was_next_sibling.save(unchecked: 1)
+    # end
+ 
     # Link myself to next sibling.
     unless next_sib.blank?
       next_sibling = ActiveFedora::Base.find(next_sib, cast: true)
@@ -212,13 +216,13 @@ module Node# < ActiveFedora::Base
     end
 
     # Unlink myself from old parent
-    unless parent.blank? || parent == parent_was
-      was_parent = ActiveFedora::Base.find(parent_was, cast: true)
-      were_sibs = was_parent.children
-      were_sibs.delete(parent_was)
-      was_parent.children = were_sibs
-      was_parent.save(unchecked: 1)
-    end
+    # unless parent.blank? || parent == parent_was
+      # was_parent = ActiveFedora::Base.find(parent_was, cast: true)
+      # were_sibs = was_parent.children
+      # were_sibs.delete(parent_was)
+      # was_parent.children = were_sibs
+      # was_parent.save(unchecked: 1)
+    # end
 
     # Link myself to my parent as a child.
     unless parent.blank?

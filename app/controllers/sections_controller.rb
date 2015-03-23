@@ -68,6 +68,6 @@ class SectionsController < ApplicationController
     end
 
     def section_params
-      params.require(:section).permit(:name, :prev_sib, :next_sib, :parent, :children, :paged_id)
+      params.require(:section).permit(:name, :prev_sib, :next_sib, :parent, :children, :paged_id, :skip_sibling_validation, :skip_checked_save)
     end
 end

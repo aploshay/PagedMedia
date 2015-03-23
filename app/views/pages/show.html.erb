@@ -17,16 +17,6 @@
     <%= @page.logical_number %>
   </p>
   
-  <p>
-    <strong>Previous page:</strong>
-    <%= @page.prev_sib %>
-  </p>
-  
-  <p>
-    <strong>Next page:</strong>
-    <%= @page.next_sib %>
-  </p>
-  
   <% if @page.ocr_file %>
   <p>  
     <%= link_to 'OCR file', ActiveFedora.fedora_config.credentials[:url] + '/' + @page.ocr_datastream.url %> 
@@ -50,6 +40,8 @@
     <%= link_to @paged.title, paged_path(@paged) %>
   </p>
   <% end %>
+
+  <%= render 'nodes/node_display_fields', node: @page %>
   
   <%= link_to 'Edit', edit_page_path(@page) %> |
   <%= link_to 'Back', pages_path %>
