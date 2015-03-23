@@ -181,12 +181,26 @@ module Node# < ActiveFedora::Base
       return false
     end
 
-    # Link myself to previous sibling.
+    # Unlink myself from old previous sibling
+    unless prev_sib.blank? || prev_sib_was == prev_sib
+      was_prev_sibling = ActiveFedora::Base.find(prev_sib_was, cast: true)
+      was_prev_sibling.next_sib = next_sib_was
+      was_prev_sibling.save(unchecked: 1)
+    end
+
+    # Link myself to new previous sibling.
     unless prev_sib.blank?
       prev_sibling = ActiveFedora::Base.find(prev_sib, cast: true)
       prev_sibling.next_sib = pid
       prev_sibling.save(unchecked: 1)
       logger.debug("Saving #{self.class.name} #{pid}:  prev_sib is #{prev_sib}")
+    end
+
+    # Unlink myself from old previous sibling
+    unless next_sib.blank? || next_sib_was == next_sib
+      was_next_sibling = ActiveFedora::Base.find(next_sib_was, cast: true)
+      was_next_sibling.prev_sib = prev_sib_was 
+      was_next_sibling.save(unchecked: 1)
     end
 
     # Link myself to next sibling.
@@ -195,6 +209,15 @@ module Node# < ActiveFedora::Base
       next_sibling.prev_sib = pid
       next_sibling.save(unchecked: 1)
       logger.debug("Saving #{self.class.name} #{pid}:  next_sib is #{next_sib}")
+    end
+
+    # Unlink myself from old parent
+    unless parent.blank? || parent == parent_was
+      was_parent = ActiveFedora::Base.find(parent_was, cast: true)
+      were_sibs = was_parent.children
+      were_sibs.delete(parent_was)
+      was_parent.children = were_sibs
+      was_parent.save(unchecked: 1)
     end
 
     # Link myself to my parent as a child.
