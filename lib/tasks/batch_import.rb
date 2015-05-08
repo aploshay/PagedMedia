@@ -314,14 +314,19 @@ module PMP
                       section = search_existing.first
                       print "\"#{name}\" found.  "
                     else
+		      #FIXME: why is prev_sib set twice?
                       section = Section.new(name: name, parent: parent_section.pid, prev_sib: prev_sib ? prev_sib.pid : nil)
                       section.prev_sib = parent_section.children.last if parent_section && parent_section.children.any?
+		      #FIXME: why is sibling validation failing?
+		      section.skip_sibling_validation = true
+		      #FIXME: why is .next_sib of prev_sib not getting updated in save?
                       if section.save
                         print "\"#{name}\" created.  "
       
                       else
                         puts "ABORTING: problem saving Section"
                         puts section.errors.messages
+			puts section.inspect
                         return
                       end
                     end
