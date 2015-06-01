@@ -18,6 +18,7 @@ class PagedsController < ApplicationController
   def validate
     @ordered = JSON.parse(find_pages())
     validated, @error = @paged.order_children()
+    #FIXME: refactor
     if @error
       flash.now[:error] = "ERROR Ordering Items : #{@error}"
     end

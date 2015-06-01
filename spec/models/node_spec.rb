@@ -111,7 +111,8 @@ describe Node, type: :model do
         end
         it 'updates the new parent' do
           book_b.reload
-          expect(book_b.children).to eq b_pages.map{|e| e.pid} + [a_pages[1].pid]
+	  b_pages_pids = b_pages.map{|e| e.pid }
+          expect(book_b.children).to eq b_pages_pids.insert(2, a_pages[1].pid)
         end
         it 'updates the new prev_sib' do
           p2 = b_pages[1]

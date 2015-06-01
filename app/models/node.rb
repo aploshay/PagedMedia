@@ -238,7 +238,14 @@ module Node
         # This is really weird.  Multi-valued attributes have the usual array
         # operators but some of them do nothing.  The only way to augment one is
         # to augment a copy and assign the result back.  ?!?!
-        my_parent.children = my_parent.children << pid
+        updated_children = my_parent.children
+	# FIXME: test change to keep children values ordered
+	if next_sib.blank?
+          updated_children << pid
+	else
+          updated_children.insert(updated_children.index(next_sib), pid)
+	end
+        my_parent.children = updated_children
         my_parent.skip_sibling_validation = true
         my_parent.skip_linkage_update = true
         my_parent.save
@@ -366,67 +373,15 @@ module Node
   # Method returns ordered children objects array and false
   # Or incomplete ordered children objects array and an error message
   # FIXME: how should we do error-checking in methods that call this?
+  #FIXME: recreate validation elsewhere...
   def order_child_objects()
-    ordered_children = Array.new
-    error = false
-    # Get first child and all child ids
-    first_child = false
-    next_child = false
-    child_ids = Array.new
-    # Check for multiple first children
-    self.children.each do |child|
-      child_ids << child
-      my_child = ActiveFedora::Base.find(child, cast: true)
-      next unless my_child.prev_sib.blank?
-      unless first_child
-        first_child = my_child
-      else
-        error = "Multiple First Children"
-        return [ordered_children, error]
-      end
-    end
-    # Check for no first child
-    if first_child
-      next_child = first_child
-    else
-      error = "No First Child Found"
-      return [ordered_children, error]
-    end
-    my_children = Array.new
-    while next_child do
-      ordered_children << next_child
-      np_id = next_child.next_sib
-      unless np_id.blank?
-        if my_children.include?(np_id)
-          # Check for infinite loop
-          error = "Infinite loop of children"
-          next_child = false
-        elsif child_ids.include?(np_id)
-          # Find next child
-          my_children << np_id
-          next_child = ActiveFedora::Base.find(np_id, cast: true)
-        else
-          # Node has no parent
-          error = "Node not Found in Listing - " + np_id.to_s
-          next_child = false
-        end
-      else
-        next_child = false
-      end
-    end
-    # Check if all children are included
-    if !error && ordered_children.count < self.children.count
-      error = "Children Missing From List"
-    end
-    return [ordered_children, error]
+    return [self.children.map { |child_id| ActiveFedora::Base.find(child_id, cast: true) }, false]
   end
 
   # Method returns ordered children pids array and false
   # Or unordered children pids array and an error message
   def order_children()
-    ordered_children = order_child_objects
-    # Return unordered list if error occurs
-    return [self.children, ordered_children[1]] if ordered_children[1]
+    return [self.children, false]
     return [ordered_children[0].collect! {|child| child.pid}, false]
   end
 
