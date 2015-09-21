@@ -1,0 +1,98 @@
+---
+manifest:
+  id: mybatch
+  date: 12-1-2014
+pageds:
+- descMetadata:
+    title: Packaged Score 2
+    creator: Grand Creator of Scores
+    type: score
+    publisher: Score Central
+    publisher_place: Bumblyburg
+    paged_struct:
+    - Scores
+    - Scores--Ultimate Scores
+    - Scores--Ultimate Scores--Volume 1
+  content:
+    pagedXML: score_xml.xml
+  pages:
+  - descMetadata:
+      logical_number: 
+      text: 
+      page_struct: []
+    content:
+      pageImage: 
+      pageOCR: 
+      pageXML: 
+  - descMetadata:
+      logical_number: 
+      text: 
+      page_struct: []
+    content:
+      pageImage: 
+      pageOCR: 
+      pageXML: 
+  - descMetadata:
+      logical_number: 
+      text: 
+      page_struct: []
+    content:
+      pageImage: 
+      pageOCR: 
+      pageXML: 
+  - descMetadata:
+      logical_number: 
+      text: 
+      page_struct: []
+    content:
+      pageImage: 
+      pageOCR: 
+      pageXML: 
+  - descMetadata:
+      logical_number: 
+      text: 
+      page_struct: []
+    content:
+      pageImage: 
+      pageOCR: 
+      pageXML: 
+  - descMetadata:
+      logical_number: 
+      text: 
+      page_struct: []
+    content:
+      pageImage: 
+      pageOCR: 
+      pageXML: 
+  - descMetadata:
+      logical_number: 
+      text: 
+      page_struct: []
+    content:
+      pageImage: 
+      pageOCR: 
+      pageXML: 
+  - descMetadata:
+      logical_number: 
+      text: 
+      page_struct: []
+    content:
+      pageImage: 
+      pageOCR: 
+      pageXML: 
+  - descMetadata:
+      logical_number: 
+      text: 
+      page_struct: []
+    content:
+      pageImage: 
+      pageOCR: 
+      pageXML: 
+  - descMetadata:
+      logical_number: 
+      text: 
+      page_struct: []
+    content:
+      pageImage: 
+      pageOCR: 
+      pageXML: 

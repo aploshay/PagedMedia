@@ -281,7 +281,7 @@ module PMP
               #TODO: require unique section name within parent scope?
               page_attributes = { skip_linkage_validation: true, skip_linkage_update: true }
               pages_yaml[index]["descMetadata"].each_pair do |key, value|
-                page_attributes[key.to_sym] = value
+                page_attributes[key.to_sym] = value.to_s
                 page_attributes[key.to_sym] ||= ""
               end
               begin
